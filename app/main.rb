@@ -24,7 +24,8 @@ class BencodeDecoder
     when "l"
       self.decode_list(io)
     when "1".."9"
-      self.decode_string(io, char)
+      io.ungetc(char)
+      self.decode_string(io)
     else
       raise "unexpected character #{char}"
     end
@@ -42,8 +43,8 @@ class BencodeDecoder
     integer_str.to_i
   end
 
-  def self.decode_string(io, first_char)
-    length_str = first_char
+  def self.decode_string(io)
+    length_str = ""
 
     while
       char = io.read(1)
@@ -61,6 +62,7 @@ class BencodeDecoder
     while
       char = io.read(1)
       break if char == "e"
+      io.ungetc(char)
       key = self.do_decode(io)
       value = self.do_decode(io)
       dictionary[key] = value
