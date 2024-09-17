@@ -28,6 +28,9 @@ when "info"
   metainfo_file.piece_hashes.each do |hash|
     puts "#{hash}"
   end
+when "peers"
+  metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
+  TrackerClient.new.get(metainfo_file.tracker_url, metainfo_file.info_hash)
 else
   raise "unsupported command #{command}"
 end
