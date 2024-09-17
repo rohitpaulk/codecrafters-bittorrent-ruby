@@ -22,7 +22,8 @@ command_class = {
   "peers" => Commands::Peers,
   "handshake" => Commands::Handshake,
   "download_piece" => Commands::DownloadPiece,
-  "download" => Commands::Download
+  "download" => Commands::Download,
+  "magnet_parse" => Commands::MagnetParse
 }[command]
 
 if command_class.nil?
