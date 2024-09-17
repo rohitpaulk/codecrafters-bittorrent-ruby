@@ -4,6 +4,12 @@ class PeerHandshake
     @peer_id = peer_id
   end
 
+  def self.from_bytes(bytes)
+    info_hash = bytes[28..47].unpack1('H*')
+    peer_id = bytes[48..67].unpack1('H*')
+    new(info_hash, peer_id)
+  end
+
   def to_bytes
     [
       19.chr,
@@ -12,11 +18,5 @@ class PeerHandshake
       [@info_hash].pack("H*"), # This will be 20 bytes
       @peer_id,
     ].join("")
-  end
-
-  def self.from_bytes(bytes)
-    info_hash = bytes[28..47].unpack1('H*')
-    peer_id = bytes[48..67].unpack1('H*')
-    new(info_hash, peer_id)
   end
 end
