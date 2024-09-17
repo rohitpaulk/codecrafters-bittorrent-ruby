@@ -60,7 +60,18 @@ class BencodeDecoder
   end
 
   def self.decode_list(io)
-    raise NotImplementedError
+    elements = []
+    char = io.read(1)
+
+    case char
+    when "e"
+      elements
+    else
+      io.ungetc(char)
+      elements << self.do_decode(io)
+    end
+
+    elements
   end
 end
 
