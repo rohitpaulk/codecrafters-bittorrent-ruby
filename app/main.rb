@@ -18,10 +18,16 @@ when "decode"
   decoded = BencodeDecoder.decode(ARGV[1])
   puts JSON.generate(decoded)
 when "info"
-  parsed = MetainfoFile.parse(File.read(ARGV[1]))
-  puts "Tracker URL: #{parsed.tracker_url}"
-  puts "Length: #{parsed.length}"
-  puts "Info Hash: #{parsed.info_hash}"
+  metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
+  puts "Tracker URL: #{metainfo_file.tracker_url}"
+  puts "Length: #{metainfo_file.length}"
+  puts "Info Hash: #{metainfo_file.info_hash}"
+  puts "Piece Length: #{metainfo_file.piece_length}"
+  puts "Piece Hashes:"
+
+  metainfo_file.piece_hashes.each do |hash|
+    puts "#{hash}"
+  end
 else
   raise "unsupported command #{command}"
 end
