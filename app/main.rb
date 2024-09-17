@@ -66,6 +66,7 @@ class BencodeDecoder
       dictionary[key] = value
     end
 
+    dictionary
   end
 
   def self.decode_list(io)
