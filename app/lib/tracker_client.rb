@@ -2,8 +2,9 @@ require 'cgi'
 require 'httparty'
 
 class TrackerClient
-  def get(metainfo_file)
+  def get_peers(metainfo_file)
     info_hash_bytes = [metainfo_file.info_hash].pack('H*')
+
     response = HTTParty.get(
       "#{metainfo_file.tracker_url}",
       query: {
@@ -21,6 +22,12 @@ class TrackerClient
       raise "tracker returned #{response.code}: #{response.body}"
     end
 
-    BencodeDecoder.decode(response.body)
+    decoded_response = BencodeDecoder.decode(response.body)
+
+    decoded_response.fetch("peers").chars.each_slice(6).map do |peer_bytes|
+      ip = peer_bytes[0..3].map(&:ord).join('.')
+      port = peer_bytes[4..5].join.unpack1("n")
+      Peer.new(ip, port)
+    end
   end
 end

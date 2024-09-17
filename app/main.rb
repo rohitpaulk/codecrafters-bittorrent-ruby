@@ -30,13 +30,16 @@ when "info"
   end
 when "peers"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
-  tracker_response = TrackerClient.new.get(metainfo_file)
+  peers = TrackerClient.new.get_peers(metainfo_file)
 
-  tracker_response["peers"].chars.each_slice(6) do |peer|
-    ip = peer[0..3].map(&:ord).join('.')
-    port = peer[4..5].join.unpack1("n")
-    puts "#{ip}:#{port}"
+  peers.each do |peer|
+    puts "#{peer.ip}:#{peer.port}"
   end
+when "handshake"
+  metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
+  peer_ip, peer_port = ARGV[2].split(":")
+  handshake = PeerHandshake.new(metainfo_file.info_hash, peer_ip, peer_port)
+  puts handshake.to_s
 else
   raise "unsupported command #{command}"
 end
