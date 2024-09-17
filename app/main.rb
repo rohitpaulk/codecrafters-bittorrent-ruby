@@ -8,7 +8,7 @@ end
 
 class BencodeDecoder
   def self.decode(bencoded_value)
-    io = StringIO.new(bencoded_value)
+    io = StringIO.new(bencoded_value.dup)
 
     self.do_decode(io)
   end
@@ -61,14 +61,17 @@ class BencodeDecoder
 
   def self.decode_list(io)
     elements = []
-    char = io.read(1)
 
-    case char
-    when "e"
-      elements
-    else
-      io.ungetc(char)
-      elements << self.do_decode(io)
+    while
+      char = io.read(1)
+
+      case char
+      when "e"
+        break
+      else
+        io.ungetc(char)
+        elements << self.do_decode(io)
+      end
     end
 
     elements
