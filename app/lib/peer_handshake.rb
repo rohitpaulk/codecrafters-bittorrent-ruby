@@ -1,15 +1,22 @@
 class PeerHandshake
-  def initialize(info_hash)
+  def initialize(info_hash, peer_id)
     @info_hash = info_hash
+    @peer_id = peer_id
   end
 
   def to_bytes
     [
-      "19".ord,
+      19.chr,
       "BitTorrent protocol",
-      *[0]*8, # Reserved bytes
+      "\x00" * 8, # Reserved bytes
       [@info_hash].pack("H*"), # This will be 20 bytes
-      "00112233445566778899", # Peer ID
+      @peer_id,
     ].join("")
+  end
+
+  def self.from_bytes(bytes)
+    info_hash = bytes[28..47].unpack1('H*')
+    peer_id = bytes[48..67].unpack1('H*')
+    new(info_hash, peer_id)
   end
 end

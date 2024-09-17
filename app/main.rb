@@ -1,6 +1,7 @@
 require "json"
 require "stringio"
 require "zeitwerk"
+require "socket"
 
 loader = Zeitwerk::Loader.new
 loader.push_dir(File.join(__dir__, "lib"))
@@ -38,11 +39,17 @@ when "peers"
 when "handshake"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   peer_ip, peer_port = ARGV[2].split(":")
-  handshake = PeerHandshake.new(metainfo_file.info_hash)
+  handshake = PeerHandshake.new(metainfo_file.info_hash, "00112233445566778899")
   socket = TCPSocket.new(peer_ip, peer_port)
   socket.write(handshake.to_bytes)
   response = socket.read(68)
-  puts response
+  handshake = PeerHandshake.from_bytes(response)
+
+  if handshake.info_hash != metainfo_file.info_hash
+    raise "info hash mismatch (expected #{metainfo_file.info_hash}, got #{handshake.info_hash})"
+  end
+
+  puts "Peer ID: #{handshake.peer_id}"
 else
   raise "unsupported command #{command}"
 end
