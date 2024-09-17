@@ -1,5 +1,6 @@
 require "cgi"
 require "httparty"
+require "securerandom"
 
 class TrackerClient
   def get_peer_addresses(tracker_url, info_hash)
@@ -11,7 +12,7 @@ class TrackerClient
         info_hash: info_hash_bytes,
         compact: 1,
         left: 100, # TODO: Does this need to be a specific length?
-        peer_id: "00112233445566778899",
+        peer_id: SecureRandom.hex(10),
         port: 6881,
         uploaded: 0,
         downloaded: 0
