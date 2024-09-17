@@ -38,8 +38,11 @@ when "peers"
 when "handshake"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   peer_ip, peer_port = ARGV[2].split(":")
-  handshake = PeerHandshake.new(metainfo_file.info_hash, peer_ip, peer_port)
-  puts handshake.to_s
+  handshake = PeerHandshake.new(metainfo_file.info_hash)
+  socket = TCPSocket.new(peer_ip, peer_port)
+  socket.write(handshake.to_bytes)
+  response = socket.read(68)
+  puts response
 else
   raise "unsupported command #{command}"
 end

@@ -5,4 +5,8 @@ class Peer
     @ip = ip
     @port = port
   end
+
+  def to_s
+    "<Peer #{ip}:#{port}>"
+  end
 end
