@@ -15,7 +15,7 @@ class MagnetLink
   end
 
   def info_hash
-    prefix, hash = parsed_data["xt"].split(":")
+    prefix, hash = parsed_data["xt"].rsplit(":", 1)
     raise "Invalid xt prefix #{prefix}" unless prefix == "urn:btih"
     hash
   end
