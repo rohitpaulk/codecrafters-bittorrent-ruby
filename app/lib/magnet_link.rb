@@ -14,6 +14,12 @@ class MagnetLink
     }.compact
   end
 
+  def info_hash
+    prefix, hash = parsed_data["xt"].split(":")
+    raise "Invalid xt prefix #{prefix}" unless prefix == "urn:btih"
+    hash
+  end
+
   def tracker_urls
     parsed_data["tr"]
   end

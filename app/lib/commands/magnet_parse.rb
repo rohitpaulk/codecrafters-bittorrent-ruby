@@ -12,6 +12,7 @@ module Commands
       magnet_link_str = args[1]
       magnet_link = MagnetLink.new(magnet_link_str)
       puts "Tracker URL: #{magnet_link.tracker_urls.first}"
+      puts "Info Hash: #{magnet_link.info_hash}"
     end
   end
 end
