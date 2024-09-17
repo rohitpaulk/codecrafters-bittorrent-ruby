@@ -27,7 +27,7 @@ class PeerConnection
   def perform_extension_handshake!
     raise "base handshake not performed" if @socket.nil?
 
-    outgoing_handshake = PeerMessage.new(20, "")
+    outgoing_handshake = PeerMessage.new(20, "\x00#{BencodeEncoder.encode({"m" => {"ut_metadata" => 6}})}")
     outgoing_handshake.write(@socket)
     incoming_handshake_message = wait_for_message!
     raise "expected extension handshake message, got #{incoming_handshake_message.type}" unless incoming_handshake_message.type.eql?(:extension)
