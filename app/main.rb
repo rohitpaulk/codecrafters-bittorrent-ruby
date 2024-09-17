@@ -56,7 +56,16 @@ class BencodeDecoder
   end
 
   def self.decode_dictionary(io)
-    raise NotImplementedError
+    dictionary = {}
+
+    while
+      char = io.read(1)
+      break if char == "e"
+      key = self.do_decode(io)
+      value = self.do_decode(io)
+      dictionary[key] = value
+    end
+
   end
 
   def self.decode_list(io)
