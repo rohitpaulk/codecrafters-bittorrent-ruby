@@ -1,15 +1,59 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.4.2)
     bigdecimal (3.1.8)
     csv (3.3.0)
     httparty (0.22.0)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
+    json (2.7.2)
+    language_server-protocol (3.17.0.3)
+    lint_roller (1.1.0)
     mini_mime (1.1.5)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
+    parallel (1.26.3)
+    parser (3.3.5.0)
+      ast (~> 2.4.1)
+      racc
+    racc (1.8.1)
+    rainbow (3.1.1)
+    regexp_parser (2.9.2)
+    rexml (3.3.7)
+    rubocop (1.65.1)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 2.4, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.32.3)
+      parser (>= 3.3.1.0)
+    rubocop-performance (1.21.1)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+    ruby-progressbar (1.13.0)
+    standard (1.40.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.65.0)
+      standard-custom (~> 1.0.0)
+      standard-performance (~> 1.4)
+    standard-custom (1.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.50)
+    standard-performance (1.4.0)
+      lint_roller (~> 1.1)
+      rubocop-performance (~> 1.21.0)
+    standardrb (1.0.1)
+      standard
+    unicode-display_width (2.6.0)
     zeitwerk (2.6.18)
 
 PLATFORMS
@@ -21,6 +65,7 @@ PLATFORMS
 
 DEPENDENCIES
   httparty
+  standardrb
   zeitwerk
 
 BUNDLED WITH

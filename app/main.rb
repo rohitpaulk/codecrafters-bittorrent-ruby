@@ -31,9 +31,9 @@ when "info"
   end
 when "peers"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
-  peers = TrackerClient.new.get_peers(metainfo_file)
+  peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file)
 
-  peers.each do |peer|
+  peer_addresses.each do |peer_address|
     puts "#{peer.ip}:#{peer.port}"
   end
 when "handshake"

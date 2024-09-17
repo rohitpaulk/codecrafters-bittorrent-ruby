@@ -1,4 +1,4 @@
-class Peer
+class PeerAddress
   attr_accessor :ip, :port
 
   def initialize(ip, port)

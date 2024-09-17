@@ -2,7 +2,7 @@ require 'cgi'
 require 'httparty'
 
 class TrackerClient
-  def get_peers(metainfo_file)
+  def get_peer_addresses(metainfo_file)
     info_hash_bytes = [metainfo_file.info_hash].pack('H*')
 
     response = HTTParty.get(
@@ -27,7 +27,7 @@ class TrackerClient
     decoded_response.fetch("peers").chars.each_slice(6).map do |peer_bytes|
       ip = peer_bytes[0..3].map(&:ord).join('.')
       port = peer_bytes[4..5].join.unpack1("n")
-      Peer.new(ip, port)
+      PeerAddress.new(ip, port)
     end
   end
 end
