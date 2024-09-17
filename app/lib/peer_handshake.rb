@@ -1,4 +1,7 @@
 class PeerHandshake
+  attr_accessor :info_hash
+  attr_accessor :peer_id
+
   def initialize(info_hash, peer_id)
     @info_hash = info_hash
     @peer_id = peer_id
