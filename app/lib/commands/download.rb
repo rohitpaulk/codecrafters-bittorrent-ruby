@@ -18,9 +18,9 @@ class Commands::Download
     raise OptionParser::MissingArgument, "Torrent file is required" if torrent_file_path.nil?
 
     metainfo_file = MetainfoFile.parse(File.read(torrent_file_path))
-    peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file)
+    peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file.tracker_url, metainfo_file.info_hash)
 
-    peer_connection = PeerConnection.new(metainfo_file, peer_addresses.first)
+    peer_connection = PeerConnection.new(metainfo_file.info_hash, peer_addresses.first)
     peer_connection.perform_handshake!
     peer_connection.wait_for_bitfield!
     peer_connection.send_interested!

@@ -23,6 +23,7 @@ command_class = {
   "handshake" => Commands::Handshake,
   "download_piece" => Commands::DownloadPiece,
   "download" => Commands::Download,
+  "magnet_handshake" => Commands::MagnetHandshake,
   "magnet_parse" => Commands::MagnetParse
 }[command]
 

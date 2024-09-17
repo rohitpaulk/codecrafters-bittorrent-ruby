@@ -1,6 +1,6 @@
 class PeerConnection
-  def initialize(metainfo_file, peer_address)
-    @metainfo_file = metainfo_file
+  def initialize(info_hash, peer_address)
+    @info_hash = info_hash
     @peer_address = peer_address
   end
 
@@ -8,15 +8,15 @@ class PeerConnection
     raise "handshake already performed" unless @socket.nil?
 
     @socket = TCPSocket.new(@peer_address.ip, @peer_address.port)
-    outgoing_handshake = PeerHandshake.new(@metainfo_file.info_hash, "00112233445566778899")
+    outgoing_handshake = PeerHandshake.new(@info_hash, "00112233445566778899", supports_extension_protocol: true)
     puts "→ #{outgoing_handshake}"
     @socket.write(outgoing_handshake.to_bytes)
     incoming_handshake_bytes = @socket.read(68)
-    raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes.size == 68
+    raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes&.size == 68
     incoming_handshake = PeerHandshake.from_bytes(incoming_handshake_bytes)
 
-    if incoming_handshake.info_hash != @metainfo_file.info_hash
-      raise "info hash mismatch (expected #{@metainfo_file.info_hash}, got #{incoming_handshake.info_hash})"
+    if incoming_handshake.info_hash != @info_hash
+      raise "info hash mismatch (expected #{@info_hash}, got #{incoming_handshake.info_hash})"
     end
 
     puts "  ← #{incoming_handshake}"

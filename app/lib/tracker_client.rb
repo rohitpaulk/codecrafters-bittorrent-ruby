@@ -2,15 +2,15 @@ require "cgi"
 require "httparty"
 
 class TrackerClient
-  def get_peer_addresses(metainfo_file)
-    info_hash_bytes = [metainfo_file.info_hash].pack("H*")
+  def get_peer_addresses(tracker_url, info_hash)
+    info_hash_bytes = [info_hash].pack("H*")
 
     response = HTTParty.get(
-      metainfo_file.tracker_url,
+      tracker_url,
       query: {
         info_hash: info_hash_bytes,
         compact: 1,
-        left: metainfo_file.length,
+        left: 100, # TODO: Does this need to be a specific length?
         peer_id: "00112233445566778899",
         port: 6881,
         uploaded: 0,
