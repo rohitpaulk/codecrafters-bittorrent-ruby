@@ -13,9 +13,14 @@ end
 
 command = ARGV[0]
 
-if command == "decode"
+case command
+when "decode"
   decoded = BencodeDecoder.decode(ARGV[1])
   puts JSON.generate(decoded)
+when "info"
+  parsed = MetainfoFile.parse(File.read(ARGV[1]))
+  puts "Tracker URL: #{parsed.tracker_url}"
+  puts "Length: #{parsed.length}"
 else
   raise "unsupported command #{command}"
 end
