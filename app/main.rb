@@ -3,6 +3,8 @@ require "stringio"
 require "zeitwerk"
 require "socket"
 
+$stdout.sync = true
+
 loader = Zeitwerk::Loader.new
 loader.push_dir(File.join(__dir__, "lib"))
 loader.setup
