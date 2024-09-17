@@ -39,17 +39,18 @@ when "peers"
 when "handshake"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   peer_ip, peer_port = ARGV[2].split(":")
-  handshake = PeerHandshake.new(metainfo_file.info_hash, "00112233445566778899")
-  socket = TCPSocket.new(peer_ip, peer_port)
-  socket.write(handshake.to_bytes)
-  response = socket.read(68)
-  handshake = PeerHandshake.from_bytes(response)
-
-  if handshake.info_hash != metainfo_file.info_hash
-    raise "info hash mismatch (expected #{metainfo_file.info_hash}, got #{handshake.info_hash})"
-  end
-
+  peer_connection = PeerConnection.new(metainfo_file, PeerAddress.new(peer_ip, peer_port))
+  handshake = peer_connection.perform_handshake!
   puts "Peer ID: #{handshake.peer_id}"
+when "download_piece"
+  metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
+  peer_ip, peer_port = ARGV[2].split(":")
+  piece_index = ARGV[3].to_i
+  peer_connection = PeerConnection.new(metainfo_file, PeerAddress.new(peer_ip, peer_port))
+  peer_connection.perform_handshake!
+  peer_connection.wait_for_bitfield!
+  peer_connection.send_interested!
+  peer_connection.wait_for_unchoke!
 else
   raise "unsupported command #{command}"
 end

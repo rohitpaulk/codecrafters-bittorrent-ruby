@@ -22,4 +22,8 @@ class PeerHandshake
       @peer_id,
     ].join("")
   end
+
+  def to_s
+    "<PeerHandshake(info_hash: #{@info_hash}, peer_id: #{@peer_id})>"
+  end
 end
