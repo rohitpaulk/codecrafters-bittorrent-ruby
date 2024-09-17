@@ -21,6 +21,7 @@ class Commands::DownloadPiece
 
     metainfo_file = MetainfoFile.parse(File.read(torrent_file_path))
     peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file.tracker_url, metainfo_file.info_hash)
+    puts "peer_addresses: #{peer_addresses}"
     peer_address = peer_addresses.first
     puts "peer: #{peer_address}"
     # peer_address = PeerAddress.new("127.0.0.1", 51431)
