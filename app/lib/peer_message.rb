@@ -29,6 +29,8 @@ class PeerMessage
       :request
     when 7
       :piece
+    when 20
+      :extension
     else
       :unknown
     end

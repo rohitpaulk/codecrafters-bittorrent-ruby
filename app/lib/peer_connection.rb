@@ -24,6 +24,26 @@ class PeerConnection
     incoming_handshake
   end
 
+  def perform_extension_handshake!
+    raise "base handshake not performed" if @socket.nil?
+
+    outgoing_handshake = PeerMessage.new(20, "")
+    outgoing_handshake.write(@socket)
+    incoming_handshake_message = wait_for_message!
+    raise "expected extension handshake message, got #{incoming_handshake_message.type}" unless incoming_handshake_message.type.eql?(:extension)
+
+    # raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes&.size == 68
+    # incoming_handshake = PeerHandshake.from_bytes(incoming_handshake_bytes)
+
+    # if incoming_handshake.info_hash != @info_hash
+    #   raise "info hash mismatch (expected #{@info_hash}, got #{incoming_handshake.info_hash})"
+    # end
+
+    # puts "  ← #{incoming_handshake}"
+
+    # incoming_handshake
+  end
+
   def send_interested!
     send_message!(PeerMessage.new(2, ""))
   end

@@ -11,7 +11,12 @@ class PeerHandshake
   def self.from_bytes(bytes)
     info_hash = bytes[28..47].unpack1("H*")
     peer_id = bytes[48..67].unpack1("H*")
-    new(info_hash, peer_id)
+    supports_extension_protocol = (bytes[25].ord & (1 << 4)) != 0
+    new(info_hash, peer_id, supports_extension_protocol: supports_extension_protocol)
+  end
+
+  def supports_extension_protocol?
+    @supports_extension_protocol
   end
 
   def to_bytes
