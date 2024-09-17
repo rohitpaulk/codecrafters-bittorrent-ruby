@@ -8,7 +8,7 @@ class PeerConnection
     raise "handshake already performed" unless @socket.nil?
 
     @socket = TCPSocket.new(@peer_address.ip, @peer_address.port)
-    outgoing_handshake = PeerHandshake.new(@info_hash, SecureRandom.hex(10), supports_extension_protocol: false)
+    outgoing_handshake = PeerHandshake.new(@info_hash, SecureRandom.hex(10), supports_extension_protocol: true)
     puts "→ #{outgoing_handshake}"
     @socket.write(outgoing_handshake.to_bytes)
     incoming_handshake_bytes = @socket.read(68)
