@@ -13,5 +13,8 @@ class Commands::MagnetHandshake
     else
       puts "Peer does not support extension protocol"
     end
+  rescue Errno::EPIPE
+    puts "Peer disconnected"
+    exit 1
   end
 end
