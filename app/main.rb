@@ -27,14 +27,14 @@ when "info"
   puts "Piece Hashes:"
 
   metainfo_file.piece_hashes.each do |hash|
-    puts "#{hash}"
+    puts hash
   end
 when "peers"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file)
 
   peer_addresses.each do |peer_address|
-    puts "#{peer.ip}:#{peer.port}"
+    puts "#{peer_address.ip}:#{peer_address.port}"
   end
 when "handshake"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
