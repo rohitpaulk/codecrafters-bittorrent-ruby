@@ -5,7 +5,7 @@ class Commands::MagnetHandshake
     peer_connection = PeerConnection.new(magnet_link.info_hash, peer_addresses.first)
     handshake = peer_connection.perform_handshake!
     peer_connection.wait_for_bitfield!
-    puts "Peer ID: #{handshake.peer_id}"
+    puts "Peer ID: #{handshake.peer_id} (#{handshake.supports_extension_protocol? ? "supports" : "does not support"} extension protocol)"
 
     if handshake.supports_extension_protocol?
       peer_connection.perform_extension_handshake!
