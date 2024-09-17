@@ -31,8 +31,11 @@ when "info"
 when "peers"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   tracker_response = TrackerClient.new.get(metainfo_file)
-  tracker_response["peers"].each do |peer|
-    puts "#{peer["ip"]}:#{peer["port"]}"
+
+  tracker_response["peers"].chars.each_slice(6) do |peer|
+    ip = peer[0..3].map(&:ord).join('.')
+    port = peer[4..5].join.unpack1("n")
+    puts "#{ip}:#{port}"
   end
 else
   raise "unsupported command #{command}"

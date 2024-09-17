@@ -8,6 +8,7 @@ class TrackerClient
       "#{metainfo_file.tracker_url}",
       query: {
         info_hash: info_hash_bytes,
+        compact: 1,
         left: metainfo_file.length,
         peer_id: "00112233445566778899",
         port: 6881,
