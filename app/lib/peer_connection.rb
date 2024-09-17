@@ -8,11 +8,18 @@ class PeerConnection
     raise "handshake already performed" unless @socket.nil?
 
     @socket = TCPSocket.new(@peer_address.ip, @peer_address.port)
-    outgoing_handshake = PeerHandshake.new(@info_hash, SecureRandom.hex(10), supports_extension_protocol: true)
+    outgoing_handshake = PeerHandshake.new(@info_hash, SecureRandom.hex(10), supports_extension_protocol: false)
     puts "→ #{outgoing_handshake}"
     @socket.write(outgoing_handshake.to_bytes)
     incoming_handshake_bytes = @socket.read(68)
-    raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes&.size == 68
+
+    if incoming_handshake_bytes.nil?
+      @socket.close
+      raise "handshake failed (expected 68 bytes, got EOF)"
+    end
+
+    raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes.size == 68
+
     incoming_handshake = PeerHandshake.from_bytes(incoming_handshake_bytes)
 
     if incoming_handshake.info_hash != @info_hash
