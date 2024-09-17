@@ -21,6 +21,7 @@ when "info"
   parsed = MetainfoFile.parse(File.read(ARGV[1]))
   puts "Tracker URL: #{parsed.tracker_url}"
   puts "Length: #{parsed.length}"
+  puts "Info Hash: #{parsed.info_hash}"
 else
   raise "unsupported command #{command}"
 end

@@ -1,3 +1,5 @@
+require "digest"
+
 class MetainfoFile
   def self.parse(bencoded_value)
     decoded = BencodeDecoder.decode(bencoded_value)
@@ -10,6 +12,10 @@ class MetainfoFile
 
   def info_dict
     @raw_dict.fetch("info")
+  end
+
+  def info_hash
+    Digest::SHA1.hexdigest(BencodeEncoder.encode(info_dict))
   end
 
   def tracker_url
