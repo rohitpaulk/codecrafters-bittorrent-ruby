@@ -84,7 +84,7 @@ when "download_piece"
   end
 
   File.write(output_file_path, block_data_list.join)
-when "download_file"
+when "download"
   require "optparse"
 
   output_file_path = nil
