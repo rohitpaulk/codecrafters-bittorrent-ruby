@@ -22,9 +22,10 @@ class MetainfoFile
     info_dict.fetch("piece length")
   end
 
-  def piece_hashes
-    info_dict.fetch("pieces").each_char.each_slice(20).map do |hash_chars|
-      hash_chars.join.unpack1("H*")
+  def pieces
+    info_dict.fetch("pieces").each_char.each_slice(20).each_with_index.map do |hash_chars, index|
+      is_last_piece = index == info_dict.fetch("pieces").length / 20 - 1
+      Piece.new(index, is_last_piece ? (length - (index * piece_length)) : piece_length, hash_chars.join.unpack1("H*"))
     end
   end
 

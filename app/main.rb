@@ -26,8 +26,8 @@ when "info"
   puts "Piece Length: #{metainfo_file.piece_length}"
   puts "Piece Hashes:"
 
-  metainfo_file.piece_hashes.each do |hash|
-    puts hash
+  metainfo_file.pieces.each do |piece|
+    puts piece.hash
   end
 when "peers"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
@@ -46,11 +46,21 @@ when "download_piece"
   metainfo_file = MetainfoFile.parse(File.read(ARGV[1]))
   peer_ip, peer_port = ARGV[2].split(":")
   piece_index = ARGV[3].to_i
+  piece = metainfo_file.pieces[piece_index]
+
+  raise "piece index out of bounds (#{piece_index} >= #{metainfo_file.pieces.length})" if piece.nil?
+
   peer_connection = PeerConnection.new(metainfo_file, PeerAddress.new(peer_ip, peer_port))
   peer_connection.perform_handshake!
   peer_connection.wait_for_bitfield!
   peer_connection.send_interested!
   peer_connection.wait_for_unchoke!
+
+  piece.blocks.each do |block|
+    peer_connection.send_request!(block)
+    data = peer_connection.wait_for_piece!(block)
+    puts "Downloaded block #{block.index} of piece #{piece.index}"
+  end
 else
   raise "unsupported command #{command}"
 end

@@ -25,13 +25,17 @@ class PeerMessage
       :interested
     when 5
       :bitfield
+    when 6
+      :request
+    when 7
+      :piece
     else
       :unknown
     end
   end
 
   def to_s
-    "<PeerMessage(type: #{type}, id: #{@id},  payload: #{@payload.unpack1("H*")})>"
+    "<PeerMessage(type: #{type}, id: #{@id}, payload: #{@payload.unpack1("H*")[0, 20]}#{(@payload.length > 10) ? "..." : ""})>"
   end
 
   def write(socket)
