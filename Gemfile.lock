@@ -1,15 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    zeitwerk (2.6.18)
 
 PLATFORMS
   aarch64-linux-musl
   arm64-darwin-21
   arm64-darwin-23
-  x86_64-linux
   ruby
+  x86_64-linux
 
 DEPENDENCIES
+  zeitwerk
 
 BUNDLED WITH
    2.5.6
