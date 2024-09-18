@@ -27,14 +27,7 @@ class Commands::Download
     peer_connection.wait_for_unchoke!
 
     piece_data_list = metainfo_file.pieces.map do |piece|
-      block_data_list = piece.blocks.map do |block|
-        peer_connection.send_request!(block)
-        data = peer_connection.wait_for_piece!(block)
-        puts "Downloaded block #{block.index} of piece #{piece.index}"
-        data
-      end
-
-      block_data_list
+      peer_connection.download_piece!(piece)
     end
 
     File.write(output_file_path, piece_data_list.join)

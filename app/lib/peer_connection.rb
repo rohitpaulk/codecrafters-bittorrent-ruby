@@ -4,6 +4,22 @@ class PeerConnection
     @peer_address = peer_address
   end
 
+  def download_piece!(piece)
+    piece.blocks.each do |block|
+      send_request!(block)
+    end
+
+    block_data_list = []
+
+    piece.blocks.each do
+      block, data = wait_for_piece!(piece)
+      puts "Downloaded block #{block.index} of piece #{piece.index}"
+      block_data_list << [block, data]
+    end
+
+    block_data_list.sort_by! { |block, _| block.index }.map! { |_, data| data }.join("")
+  end
+
   def perform_handshake!
     raise "handshake already performed" unless @socket.nil?
 
@@ -78,21 +94,23 @@ class PeerConnection
     PeerMessage.read(@socket).tap { |message| puts "  ← #{message}" }
   end
 
-  def wait_for_piece!(block)
+  def wait_for_piece!(piece)
     message = wait_for_message!
     raise "expected piece message, got #{message.type}" unless message.type.eql?(:piece)
 
     message_io = StringIO.new(message.payload)
     message_piece_index = message_io.read(4).unpack1("N")
-    raise "piece index mismatch (expected #{block.piece.index}, got #{message_piece_index})" unless message_piece_index == block.piece.index
+    raise "piece index mismatch (expected #{piece.index}, got #{message_piece_index})" unless message_piece_index == piece.index
+    block_start_byte = message_io.read(4).unpack1("N")
+    block_data = message_io.read
 
-    message_block_start_byte = message_io.read(4).unpack1("N")
-    raise "block start byte mismatch (expected #{block.start_byte}, got #{message_block_start_byte})" unless message_block_start_byte == block.start_byte
+    block = piece.blocks.find do |block|
+      block.start_byte == block_start_byte
+    end.tap do |block|
+      raise "block not found for piece #{piece.index} (start byte #{block_start_byte})" if block.nil?
+    end
 
-    message_block_data = message_io.read
-    raise "block data mismatch (expected #{block.length} bytes, got #{message_block_data.size})" unless message_block_data.size == block.length
-
-    message_block_data
+    [block, block_data]
   end
 
   def wait_for_unchoke!

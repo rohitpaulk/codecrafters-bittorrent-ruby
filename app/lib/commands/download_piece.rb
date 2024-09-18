@@ -35,13 +35,7 @@ class Commands::DownloadPiece
     peer_connection.send_interested!
     peer_connection.wait_for_unchoke!
 
-    block_data_list = piece.blocks.map do |block|
-      peer_connection.send_request!(block)
-      data = peer_connection.wait_for_piece!(block)
-      puts "Downloaded block #{block.index} of piece #{piece.index}"
-      data
-    end
-
-    File.write(output_file_path, block_data_list.join)
+    piece_data = peer_connection.download_piece!(piece)
+    File.write(output_file_path, piece_data)
   end
 end
