@@ -17,8 +17,5 @@ class Commands::MagnetHandshake
   rescue PeerConnection::PeerDisconnectedError => e
     puts e.message
     # exit 1 (Tester doesn't like this!)
-  rescue => e
-    puts e.message
-    exit 0 # Let's see if there are any other tester errors?
   end
 end
