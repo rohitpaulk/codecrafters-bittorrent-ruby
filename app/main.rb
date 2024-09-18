@@ -3,6 +3,9 @@ require "stringio"
 require "zeitwerk"
 require "socket"
 
+require "bundler"
+Bundler.require
+
 $stdout.sync = true
 
 loader = Zeitwerk::Loader.new

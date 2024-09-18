@@ -1,4 +1,6 @@
 class PeerConnection
+  class PeerDisconnectedError < StandardError; end
+
   def initialize(info_hash, peer_address)
     @info_hash = info_hash
     @peer_address = peer_address
@@ -31,7 +33,7 @@ class PeerConnection
 
     if incoming_handshake_bytes.nil?
       @socket.close
-      raise "handshake failed (expected 68 bytes, got EOF)"
+      raise PeerDisconnectedError, "Peer #{@peer_address} disconnected"
     end
 
     raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes.size == 68
@@ -45,6 +47,9 @@ class PeerConnection
     puts "  ← #{incoming_handshake}"
 
     incoming_handshake
+  rescue Errno::ECONNRESET
+    @socket.close
+    raise PeerDisconnectedError, "Peer #{@peer_address} disconnected"
   end
 
   def perform_extension_handshake!

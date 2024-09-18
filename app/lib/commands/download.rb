@@ -20,16 +20,33 @@ class Commands::Download
     metainfo_file = MetainfoFile.parse(File.read(torrent_file_path))
     peer_addresses = TrackerClient.new.get_peer_addresses(metainfo_file.tracker_url, metainfo_file.info_hash)
 
-    peer_connection = PeerConnection.new(metainfo_file.info_hash, peer_addresses.first)
-    peer_connection.perform_handshake!
-    peer_connection.wait_for_bitfield!
-    peer_connection.send_interested!
-    peer_connection.wait_for_unchoke!
-
-    piece_data_list = metainfo_file.pieces.map do |piece|
-      peer_connection.download_piece!(piece)
+    peer_connections = peer_addresses.map do |peer_address|
+      PeerConnection.new(metainfo_file.info_hash, peer_address)
     end
 
-    File.write(output_file_path, piece_data_list.join)
+    peer_connections.each do |peer_connection|
+      peer_connection.perform_handshake!
+      peer_connection.wait_for_bitfield!
+      peer_connection.send_interested!
+      peer_connection.wait_for_unchoke!
+    end
+
+    pending_pieces = Concurrent::Array.new(metainfo_file.pieces)
+    completed_pieces = Concurrent::Array.new
+
+    peer_connections.pmap do |peer_connection|
+      until pending_pieces.empty?
+        piece = pending_pieces.shift
+
+        next if piece.nil?
+
+        data = peer_connection.download_piece!(piece)
+        completed_pieces << [piece, data]
+      end
+    end
+
+    file_data = completed_pieces.sort_by! { |piece, _| piece.index }.map! { |_, data| data }.join("")
+
+    File.write(output_file_path, file_data)
   end
 end
