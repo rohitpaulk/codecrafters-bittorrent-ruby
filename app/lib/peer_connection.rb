@@ -55,13 +55,12 @@ class PeerConnection
   def perform_extension_handshake!
     raise "base handshake not performed" if @socket.nil?
 
-    outgoing_handshake = PeerMessage.new(20, "\x00#{BencodeEncoder.encode({"m" => {"ut_metadata" => 6}})}")
+    outgoing_handshake = PeerExtensionMessage.new(20, 0, BencodeEncoder.encode({"m" => {"ut_metadata" => 6}}))
+    puts "→ #{outgoing_handshake}"
     outgoing_handshake.write(@socket)
-    incoming_handshake_message = wait_for_message!
-    raise "expected extension handshake message, got #{incoming_handshake_message.type}" unless incoming_handshake_message.type.eql?(:extension)
-
-    # raise "handshake failed (expected 68 bytes, got #{incoming_handshake_bytes.size})" unless incoming_handshake_bytes&.size == 68
-    # incoming_handshake = PeerHandshake.from_bytes(incoming_handshake_bytes)
+    incoming_handshake_message = PeerExtensionMessage.read(@socket)
+    puts "  ← #{incoming_handshake_message}"
+    puts BencodeDecoder.decode(incoming_handshake_message.payload)
 
     # if incoming_handshake.info_hash != @info_hash
     #   raise "info hash mismatch (expected #{@info_hash}, got #{incoming_handshake.info_hash})"
@@ -70,6 +69,9 @@ class PeerConnection
     # puts "  ← #{incoming_handshake}"
 
     # incoming_handshake
+  rescue Errno::ECONNRESET
+    @socket.close
+    raise PeerDisconnectedError, "Peer #{@peer_address} disconnected"
   end
 
   def send_interested!

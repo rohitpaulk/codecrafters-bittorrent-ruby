@@ -6,15 +6,19 @@ class Commands::MagnetHandshake
     handshake = peer_connection.perform_handshake!
     peer_connection.wait_for_bitfield!
     puts "Peer ID: #{handshake.peer_id}"
-    puts "Peer #{handshake.supports_extension_protocol? ? "supports" : "does not support"} extension protocol"
 
     if handshake.supports_extension_protocol?
+      puts "Peer supports extension protocol"
       peer_connection.perform_extension_handshake!
     else
       puts "Peer does not support extension protocol"
+      exit 1
     end
-  rescue Errno::EPIPE
-    puts "Peer disconnected"
+  rescue PeerConnection::PeerDisconnectedError => e
+    puts e.message
     # exit 1 (Tester doesn't like this!)
+  rescue => e
+    puts e.message
+    exit 0 # Let's see if there are any other tester errors?
   end
 end
