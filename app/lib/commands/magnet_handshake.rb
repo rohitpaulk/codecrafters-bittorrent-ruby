@@ -9,7 +9,8 @@ class Commands::MagnetHandshake
 
     if handshake.supports_extension_protocol?
       puts "Peer supports extension protocol"
-      peer_connection.perform_extension_handshake!
+      handshake = peer_connection.perform_extension_handshake!
+      puts "Peer Metadata Extension ID: #{BencodeDecoder.decode(handshake.payload).fetch("m").fetch("ut_metadata")}"
     else
       puts "Peer does not support extension protocol"
       exit 1

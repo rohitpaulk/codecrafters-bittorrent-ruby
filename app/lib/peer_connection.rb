@@ -60,15 +60,7 @@ class PeerConnection
     outgoing_handshake.write(@socket)
     incoming_handshake_message = PeerExtensionMessage.read(@socket)
     puts "  ← #{incoming_handshake_message}"
-    puts BencodeDecoder.decode(incoming_handshake_message.payload)
-
-    # if incoming_handshake.info_hash != @info_hash
-    #   raise "info hash mismatch (expected #{@info_hash}, got #{incoming_handshake.info_hash})"
-    # end
-
-    # puts "  ← #{incoming_handshake}"
-
-    # incoming_handshake
+    incoming_handshake_message
   rescue Errno::ECONNRESET
     @socket.close
     raise PeerDisconnectedError, "Peer #{@peer_address} disconnected"
