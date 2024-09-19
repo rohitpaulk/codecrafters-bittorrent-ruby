@@ -12,7 +12,8 @@ class Commands::DownloadPiece
       end
     end.parse!(argv)
 
-    torrent_file_path = argv[1] piece_index = argv[2].to_i
+    torrent_file_path = argv[1]
+    piece_index = argv[2].to_i
 
     raise OptionParser::MissingArgument, "Output file is required" if output_file_path.nil?
     raise OptionParser::MissingArgument, "Torrent file is required" if torrent_file_path.nil?
