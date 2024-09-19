@@ -55,7 +55,7 @@ class PeerConnection
   def perform_extension_handshake!
     raise "base handshake not performed" if @socket.nil?
 
-    outgoing_handshake = PeerExtensionMessage.new(20, 0, BencodeEncoder.encode({"m" => {"ut_metadata" => 6}}))
+    outgoing_handshake = PeerExtensionMessage.new(0, BencodeEncoder.encode({"m" => {"ut_metadata" => 6}}))
     puts "→ #{outgoing_handshake}"
     outgoing_handshake.write(@socket)
     incoming_handshake_message = PeerExtensionMessage.read(@socket)
