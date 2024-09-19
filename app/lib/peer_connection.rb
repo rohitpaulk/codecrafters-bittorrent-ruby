@@ -6,6 +6,10 @@ class PeerConnection
     @peer_address = peer_address
   end
 
+  def close
+    @socket&.close
+  end
+
   def download_piece!(piece)
     piece.blocks.each do |block|
       send_request!(block)
