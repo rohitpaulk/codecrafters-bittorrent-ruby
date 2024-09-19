@@ -22,6 +22,9 @@ class Commands::MagnetInfo
     raise "expected extension message type 6" unless message.extension_id.eql?(6)
     puts message.payload
     puts "Received message: #{message}"
+
+    puts "Tracker URL: #{magnet_link.tracker_urls.first}"
+    puts "Info Hash: #{magnet_link.info_hash}"
   rescue PeerConnection::PeerDisconnectedError => e
     puts e.message
     exit 1
