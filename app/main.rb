@@ -26,7 +26,8 @@ command_class = {
   "magnet_download_piece" => Commands::MagnetDownloadPiece,
   "magnet_handshake" => Commands::MagnetHandshake,
   "magnet_info" => Commands::MagnetInfo,
-  "magnet_parse" => Commands::MagnetParse
+  "magnet_parse" => Commands::MagnetParse,
+  "magnet_download" => Commands::MagnetDownload
 }[command]
 
 if command_class.nil?
