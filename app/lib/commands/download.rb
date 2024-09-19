@@ -1,4 +1,6 @@
 require "optparse"
+require "concurrent/array"
+require "pmap"
 
 class Commands::Download
   def self.run(argv)
