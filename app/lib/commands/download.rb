@@ -45,6 +45,8 @@ class Commands::Download
         data = peer_connection.download_piece!(piece)
         completed_pieces << [piece, data]
       end
+
+      peer_connection.close
     end
 
     file_data = completed_pieces.sort_by! { |piece, _| piece.index }.map! { |_, data| data }.join("")

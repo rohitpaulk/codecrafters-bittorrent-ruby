@@ -39,5 +39,7 @@ class Commands::MagnetDownloadPiece
 
     piece_data = peer_connection.download_piece!(piece)
     File.write(output_file_path, piece_data)
+  ensure
+    peer_connection&.close
   end
 end
