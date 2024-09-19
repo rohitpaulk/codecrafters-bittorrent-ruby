@@ -12,7 +12,7 @@ class Commands::MagnetDownloadPiece
       end
     end.parse!(argv)
 
-    magnet_link = argv[1]
+    magnet_link = MagnetLink.new(argv[1])
     piece_index = argv[2].to_i
 
     raise OptionParser::MissingArgument, "Output file is required" if output_file_path.nil?

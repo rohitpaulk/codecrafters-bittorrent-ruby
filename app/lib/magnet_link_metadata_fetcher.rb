@@ -25,6 +25,6 @@ class MagnetLinkMetadataFetcher
 
     MetainfoFile.from_magnet_link(magnet_link, BencodeDecoder.decode(remaining))
   ensure
-    peer_connection.close
+    peer_connection&.close
   end
 end
