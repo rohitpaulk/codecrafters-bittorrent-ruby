@@ -37,12 +37,7 @@ class PeerMessage
   end
 
   def to_s
-    if type.eql?(:extension)
-      "<PeerMessage(type: #{type}, id: #{@id}, payload: #{@payload.unpack1("H*")[0, 20]}#{(@payload.length > 10) ? "..." : ""})>"
-    else
-      extension_id = @payload.unpack1("C")
-      PeerExtensionMessage.new(extension_id, @payload[1..] || "").to_s
-    end
+    "<PeerMessage(type: #{type}, id: #{@id}, payload: #{@payload.unpack1("H*")[0, 20]}#{(@payload.length > 10) ? "..." : ""})>"
   end
 
   def write(socket)

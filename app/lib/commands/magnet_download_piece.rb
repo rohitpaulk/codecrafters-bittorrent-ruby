@@ -26,9 +26,14 @@ class Commands::MagnetDownloadPiece
 
     raise "piece index out of bounds (#{piece_index} >= #{metainfo_file.pieces.length})" if piece.nil?
 
+    puts ""
+    puts "Downloading piece"
+    puts ""
+
     peer_connection = PeerConnection.new(metainfo_file.info_hash, peer_address)
     peer_connection.perform_handshake!
     peer_connection.wait_for_bitfield!
+    peer_connection.perform_extension_handshake!
     peer_connection.send_interested!
     peer_connection.wait_for_unchoke!
 
