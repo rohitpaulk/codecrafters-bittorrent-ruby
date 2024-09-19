@@ -6,6 +6,13 @@ class MetainfoFile
     new(decoded)
   end
 
+  def self.from_magnet_link(magnet_link, info_dict)
+    new({
+      "announce" => magnet_link.tracker_urls.first,
+      "info" => info_dict
+    })
+  end
+
   def initialize(raw_dict)
     @raw_dict = raw_dict
   end

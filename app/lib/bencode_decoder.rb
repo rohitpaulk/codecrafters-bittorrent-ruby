@@ -1,8 +1,14 @@
 class BencodeDecoder
   def self.decode(bencoded_value)
+    decoded, remaining = decode_partial(bencoded_value)
+    remaining.empty? ? decoded : raise("remaining unparsed data: #{remaining}")
+  end
+
+  def self.decode_partial(bencoded_value)
     io = StringIO.new(bencoded_value.dup)
 
-    do_decode(io)
+    decoded = do_decode(io)
+    [decoded, io.read]
   end
 
   def self.do_decode(io)

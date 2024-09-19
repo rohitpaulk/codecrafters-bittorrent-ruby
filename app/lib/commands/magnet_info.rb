@@ -20,11 +20,22 @@ class Commands::MagnetInfo
     message = peer_connection.wait_for_extension_message!
 
     raise "expected extension message type 6" unless message.extension_id.eql?(6)
-    puts message.payload
-    puts "Received message: #{message}"
 
-    puts "Tracker URL: #{magnet_link.tracker_urls.first}"
-    puts "Info Hash: #{magnet_link.info_hash}"
+    decoded, remaining = BencodeDecoder.decode_partial(message.payload)
+    raise "expected msg_type 1" unless decoded.fetch("msg_type").eql?(1)
+    raise "expected piece 0" unless decoded.fetch("piece").eql?(0)
+    total_size = decoded.fetch("total_size")
+    raise "expected total_size #{total_size}, got #{remaining.length}" unless total_size.eql?(remaining.length)
+
+    metainfo_file = MetainfoFile.from_magnet_link(magnet_link, BencodeDecoder.decode(remaining))
+    puts "Tracker URL: #{metainfo_file.tracker_url}"
+    puts "Length: #{metainfo_file.length}"
+    puts "Info Hash: #{metainfo_file.info_hash}"
+    puts "Piece Length: #{metainfo_file.piece_length}"
+    puts "Piece Hashes:"
+    metainfo_file.pieces.each do |piece|
+      puts piece.hash
+    end
   rescue PeerConnection::PeerDisconnectedError => e
     puts e.message
     exit 1
