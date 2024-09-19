@@ -1,5 +1,5 @@
 class PeerExtensionMessage
-  attr_accessor :extended_id
+  attr_accessor :extension_id
   attr_accessor :payload
 
   def initialize(extension_id, payload)

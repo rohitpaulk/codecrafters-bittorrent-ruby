@@ -87,6 +87,12 @@ class PeerConnection
     raise "expected bitfield message, got #{message.type}" unless message.type.eql?(:bitfield)
   end
 
+  def wait_for_extension_message!
+    raise "handshake not performed" if @socket.nil?
+
+    PeerExtensionMessage.read(@socket).tap { |message| puts "  ← #{message}" }
+  end
+
   def wait_for_message!
     raise "handshake not performed" if @socket.nil?
 

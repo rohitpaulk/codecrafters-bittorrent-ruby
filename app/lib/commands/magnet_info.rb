@@ -17,6 +17,11 @@ class Commands::MagnetInfo
     puts "Peer Metadata Extension ID: #{metadata_extension_id}"
 
     peer_connection.send_message!(PeerExtensionMessage.new(metadata_extension_id, BencodeEncoder.encode({"msg_type" => 0, "piece" => 0})))
+    message = peer_connection.wait_for_extension_message!
+
+    raise "expected extension message type 6" unless message.extension_id.eql?(6)
+    puts message.payload
+    puts "Received message: #{message}"
   rescue PeerConnection::PeerDisconnectedError => e
     puts e.message
     exit 1
